@@ -25,19 +25,7 @@ void loop() {
   }
 }
 */
-/*
- * AFPT - Arduino Fácil Para Todos
- * 
- * Prueba Arduino MEGA + KY022
- * 
- * Modulo_KY-022.ino
- * 
- * www.fantasystudios.es/arduino
- * 
- * Creado el 19 de Abril de 2020
- * Por Manuel Peláez
- * 
- */
+
 
 
 #include <IRremote.h>
