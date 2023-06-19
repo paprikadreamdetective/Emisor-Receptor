@@ -1,10 +1,10 @@
-/*#include <IRremote.h>
+#include <IRMP.h>
 
 const int RECV_PIN = PA0; // Pin de conexión del módulo receptor infrarrojo
 const int LED_PIN = PC13; // Pin para el LED
 
-IRrecv irrecv(RECV_PIN);
-decode_results results;
+IRMP irrecv(RECV_PIN);
+IRMP_DATA results;
 
 void setup() {
   Serial.begin(9600);
@@ -13,42 +13,16 @@ void setup() {
 }
 
 void loop() {
-  if (irrecv.decode(&results)) {
+  if (irrecv.available()) {
     // Si se recibió una señal infrarroja, encender el LED
     digitalWrite(LED_PIN, HIGH);
+    irrecv.read(&results);
     Serial.print("Valor recibido: 0x");
-    Serial.println(results.value, HEX);
-    irrecv.resume(); // Recibir el siguiente valor
+    Serial.println(results.command, HEX);
   } else {
     // Si no se recibió una señal infrarroja, apagar el LED
     digitalWrite(LED_PIN, LOW);
   }
 }
-*/
 
-
-
-#include <IRremote.h>
-#include <IRremoteInt.h>
-
-const uint8_t pin_receptor = A0; // Pin del receptor IR
-IRrecv irrecv(pin_receptor);
-decode_results resultado;
-
-void setup() {
-  Serial.begin(9600);
-  pinMode(A0,INPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
-  irrecv.enableIRIn();
-  Serial.println("Receptor inicializado");
-}
-
-void loop() {
-  if (irrecv.decode() ){
-    //Serial.print("Código recibido: ");
-   // Serial.println(resultado.value, HEX);
-    irrecv.resume();
-  }
-  delay(1);
-}
 
