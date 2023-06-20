@@ -4,26 +4,38 @@
 #include <TinyIRSender.hpp>
 #include <TinyIRReceiver.hpp>
 
+#define RECV_PIN PA6   // Pin de recepción del receptor infrarrojo
+#define LED_PIN  PC13  // Pin del LED
 
-#define SEND_PIN PA6
-
-IRMP_DATA send_data;
-
+IRMP_DATA irmpData;
+bool ledState;
+bool state;
 void setup() {
+ pinMode(LED_PIN, OUTPUT);   // Configurar el pin del LED como salida
+ pinMode(RECV_PIN, INPUT);
   irmp_init();
-  pinMode(SEND_PIN , OUTPUT);
-  //irmp_irsnd_LEDFeedback(true); // Enable send signal feedback at LED_BUILTIN
-  send_data.protocol = IRMP_NEC_PROTOCOL;
-  send_data.address = 0x0707;
-  send_data.command = 0x3B; // The required inverse of the 8 bit command is added by the send routine.
-  send_data.flags = 2; // repeat frame 2 times
-  //irmpData.irsnd_init();
   Serial.begin(115200);
+  irmpData.protocol = IRMP_NEC_PROTOCOL;
+  irmpData.address = 0x0707;
+  irmpData.command = 0x3B; // The required inverse of the 8 bit command is added by the send routine.
+  irmpData.flags = 2; // repeat frame 2 times*/
+  //irmp_add_protocol(&IRMP_NEC_PROTOCOL);  // Agregar el protocolo NEC al receptor
+  //irmp_enable();
 }
 
 void loop() {
-  //delay(5000);
-  sendNEC(SEND_PIN, send_data.address, send_data.command, send_data.flags);
-  delay(1000);  // Espera un tiempo antes de enviar la siguiente señal
-  send_data.command++;
+  state = digitalRead(RECV_PIN);
+  if (irmp_get_data(&irmpData)) {
+    
+    if (state)
+      digitalWrite(LED_PIN, HIGH);
+    else
+      digitalWrite(LED_PIN, LOW);
+
+
+
+    //irmp_reset_data();  // Reiniciar el buffer de datos para recibir el próximo código IR
+  }
+    delay(1000);
+  
 }
