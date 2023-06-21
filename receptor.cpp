@@ -33,36 +33,37 @@ void setup(){
 }
 
 void loop(){
+  static uint8_t command = 0;
+  static float V = 0.0;
+  char buffer[10];
 
+  global::OLED->clearDisplay();
+  global::OLED->setCursor(0, 0);
+  global::OLED->setTextSize(1);
+  global::OLED->display();
+  delay(1000);
 
-    static uint8_t command = 0;
-    static float V = 0;
-    char buffer[10];
+  if (globalReceiver::irrecv.decode()){
+    if (globalReceiver::irrecv.decodedIRData.command > 9)
+      command = globalReceiver::irrecv.decodedIRData.command;
+    else
+      command = 0;
+    V = (command * 3.3) / 100;
+    dtostrf(V, 3, 1, buffer);
+    analogWrite(LED, (command * 255) / 100);
+    //analogWrite(LED, global::iR);
+    global::iR = globalReceiver::irrecv.decodedIRData.command, HEX;
+    global::vR = map(global::iR, 0, 1023, 0, 3.3);
+    globalReceiver::irrecv.resume();
+  }
+  //global::OLED->printf("%s", buffer);
+  //global::OLED->display();
 
-    global::OLED->clearDisplay();
-    global::OLED->setCursor(0, 0);
-    global::OLED->setTextSize(1.5);
-    global::vE = map(globalReceiver::irrecv.decodedIRData.command, 0, 1023, 0, 3.3);
-    global::OLED->print("- " + String(global::vE) + " V\n");
+    global::OLED->println("Comando recibido \n");
+    global::OLED->println(global::iR, HEX);
     global::OLED->display();
     delay(1000);
 
-    //if (globalReceiver::irrecv.decodedIRData.command)
-    if (globalReceiver::irrecv.decode()){
-      if (globalReceiver::irrecv.decodedIRData.command > 9)
-        command = globalReceiver::irrecv.decodedIRData.command;
-      else
-        command = 0;
-      V = (command * 3.3) / 100;
-      dtostrf(V, 3, 1, buffer);
-      analogWrite(LED, (command * 255) / 100);
-    }
 
-    /*
-    digitalWrite(LED, state);*/
-    digitalWrite(LED, HIGH);  // Enciende el LED
-    delay(1000);                   // Espera 1 segundo
-    digitalWrite(LED, LOW);   // Apaga el LED
-    globalReceiver::irrecv.resume();
-  delay(200);
+  delay(1000);
 }
