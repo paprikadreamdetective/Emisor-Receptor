@@ -49,10 +49,15 @@ void loop(){
 
     //if (globalReceiver::irrecv.decodedIRData.command)
     if (globalReceiver::irrecv.decode()){
-      if (globalReceiver::irrecv.decodedIRData.command > 9) {
+      if (globalReceiver::irrecv.decodedIRData.command > 9)
         command = globalReceiver::irrecv.decodedIRData.command;
-      }
+      else
+        command = 0;
+      V = (command * 3.3) / 100;
+      dtostrf(V, 3, 1, buffer);
+      analogWrite(LED, (command * 255) / 100);
     }
+
     /*
     digitalWrite(LED, state);*/
     digitalWrite(LED, HIGH);  // Enciende el LED
@@ -61,5 +66,3 @@ void loop(){
     globalReceiver::irrecv.resume();
   delay(200);
 }
-
-
