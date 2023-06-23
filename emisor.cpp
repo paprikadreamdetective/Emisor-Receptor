@@ -1,3 +1,10 @@
+/**
+ *  @file emisor.cpp
+ *
+ *
+ *  @brief Emisor de señales infrarrojas para controlar la intensidad de un led mediante el uso de un potenciometro.
+ *
+ */
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -9,29 +16,35 @@
 #define IRSND_SUPPORT_NEC_PROTOCOL 1
 #define IRSND_OUTPUT_PIN PA0
 #include <irsndSelectMain15Protocols.h>
-
 #include <irsnd.hpp>
-//#define FEEDBACK_LED_IS_ACTIVE_LOW
+
 #define ON_LED 0xabc
 #define OFF_LED 0xdef
 
- // Pin donde está conectado el LED infrarrojo
-
-unsigned int analogValue;
+/**
+ * @brief
+ *
+ */
 namespace global {
   Adafruit_SSD1306* OLED;
+  unsigned int analogValue;
   int iE, iR;
   float vE, vR;
   bool stateLed = false;
   bool stateSignal = false;
 }
-
+/**
+ * @brief
+ *
+ */
 namespace globalSender {
   IRMP_DATA ir_send;
   IRMP_DATA irmp_dummy_data;
 }
-
-
+/**
+ * @brief
+ *
+ */
 void setup() {
   pinMode(PA0, OUTPUT);
   pinMode(PA1, INPUT);
@@ -62,7 +75,10 @@ void setup() {
 
 
 }
-
+/**
+ * @brief
+ *
+ */
 void loop() {
 
   global::OLED->clearDisplay();
