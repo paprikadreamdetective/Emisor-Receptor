@@ -72,7 +72,7 @@ if(irmp_get_data(&irmp_data)){
   int address = irmp_data.address;
 
   if (address == OFF_LED){
-    analogWrite(ANALOG_OUTPUT, 0);
+    analogWrite(ANALOG_OUTPUT, 1);
     delay(200);
   }
   if (address == ON_LED){
@@ -87,8 +87,9 @@ if(irmp_get_data(&irmp_data)){
   }
 }
 
-global::OLED->print(buffer);
+global::OLED->printf("%s", buffer);
 global::OLED->display();
 
 //delay(500);
 }
+
