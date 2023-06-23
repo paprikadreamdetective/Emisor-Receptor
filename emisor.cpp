@@ -12,8 +12,8 @@
 
 #include <irsnd.hpp>
 //#define FEEDBACK_LED_IS_ACTIVE_LOW
-#define OFF_LED 0xabc
-#define ON_LED 0xdef
+#define ON_LED 0xabc
+#define OFF_LED 0xdef
 
  // Pin donde está conectado el LED infrarrojo
 
@@ -70,6 +70,7 @@ void loop() {
   global::OLED->setTextSize(1.5);
   //global::OLED->print("----------\n");       // Lectura analogica del potenciometro.
   analogValue = analogRead(PA1);
+  global::iE = analogValue;
   global::vE = analogValue * 1.0;
   global::vE = (global::vE *3.3)/1023.0;
 
@@ -79,36 +80,47 @@ void loop() {
   global::OLED->print(buffer);
   global::OLED->print("- send:" + String(global::iE) + "\n");
   global::OLED->print("- Led state: " + String(global::iE) + "\n");
-  global::OLED->display();
-  global::OLED->print("- " + String(global::vE) + " V\n");
-  global::OLED->print("- send:" + String(global::iE) + "\n");
-  global::OLED->print("- Led state: " + String(global::iE) + "\n");
-  global::OLED->display();
+
+
   //delay(1000);
 
-  if(digitalRead(PA2)) // lectura del boton de envio para enviar la señal
+  if (digitalRead(PA2)){
     global::stateSignal = !global::stateSignal;
+    delay(200);
+  } // lectura del boton de envio para enviar la señal
   if (global::stateSignal){
-    globalSender::ir_send.command = global::iE;
-    irsnd_send_data(&globalSender::ir_send, true);
-  }else{
-    globalSender::ir_send.command = global::iE;
+    globalSender::ir_send.command = analogValue;
     irsnd_send_data(&globalSender::ir_send, true);
   }
-  if(digitalRead(PA3))  // lectura del boton de apagado
+  /*else{
+    globalSender::ir_send.command = global::iE;
+    irsnd_send_data(&globalSender::ir_send, true);
+  }*/
+  if(digitalRead(PA3)){
     global::stateLed = !global::stateLed;
-  if(global::stateLed){
-    global::iE = 1023;
-    //globalSender::ir_send.sendRC5(global::iE, 14);
-    globalSender::ir_send.command = global::iE;
-    globalSender::ir_send.address = ON_LED;
-    irsnd_send_data(&globalSender::ir_send, true);
-  }else{
-    global::iE = 0;
-    globalSender::ir_send.command = global::iE;
-    globalSender::ir_send.address = OFF_LED;
-    irsnd_send_data(&globalSender::ir_send, true);
+    delay(200);
+    // lectura del boton de apagado
+    if(global::stateLed){
+      //global::iE = 1023;
+      //globalSender::ir_send.sendRC5(global::iE, 14);
+      global::OLED->print("- Led state: On" + String(global::iE) + "\n");
+      globalSender::ir_send.command = global::iE;
+      globalSender::ir_send.address = 0xabc;
+      irsnd_send_data(&globalSender::ir_send, true);
+    }else{
+      global::iE = 0;
+      global::OLED->print("- Led state: Off" + String(global::iE) + "\n");
+      globalSender::ir_send.command = global::iE;
+      globalSender::ir_send.address = 0xdef;
+      irsnd_send_data(&globalSender::ir_send, true);
+    }
   }
+  global::OLED->display();
+  delay(2);
 }
+
+
+
+
 
 
