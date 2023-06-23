@@ -1,3 +1,11 @@
+/**
+ *  @file receptor.cpp
+ *
+ *
+ *  @brief Receptor de señales infrarrojas para controlar la intensidad de un led mediante el uso de un potenciometro.
+ *
+ */
+
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -88,3 +96,4 @@ global::OLED->display();
 
 //delay(500);
 }
+
