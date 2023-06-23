@@ -29,12 +29,6 @@ namespace global {
   bool stateSignal = false;
 }
 
-/*namespace global{
-    unsigned int analogReading;
-    Adafruit_SSD1306 *oled;
-
-}*/
-
 void setup(){
 
     Serial.begin(115200);
@@ -65,13 +59,13 @@ global::OLED->println("IR Rx");
 global::OLED->setTextSize(1);
 global::OLED-> println("command");
 
-if(irmp_get_data(&globalReceiver::irmp_data)){
-  if(globalReceiver::irmp_data.command > 9)
-    command = globalReceiver::irmp_data.command;
+if(irmp_get_data(&globalReceiver::ir_receiver)){
+  if(globalReceiver::ir_receiver.command > 9)
+    command = globalReceiver::ir_receiver.command;
   else
     command = 0;
 
-  int address = globalReceiver::irmp_data.address;
+  int address = globalReceiver::ir_receiver.address;
 
   if (address == OFF_LED){
     analogWrite(ANALOG_OUTPUT, 1);
