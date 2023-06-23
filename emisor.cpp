@@ -36,6 +36,7 @@ namespace global {
   float vE, vR;
   bool stateLed = false;
   bool stateSignal = false;
+  char buffer[10];
 }
 /**
  * @brief Espacio de nombres correspondientes a la instancia de los objetos para emitir señales infrarrojas.
@@ -88,29 +89,22 @@ void loop() {
   global::vE = global::analogValue * 1.0;
   global::vE = (global::vE *3.3)/1023.0;
 
-  char buffer[10];
   dtostrf(global::vE, 5, 2, buffer);
   //global::vE = map(global::iE, 0, 1023, 0, 3.3);
   global::OLED->print(buffer);
   global::OLED->print("- send:" + String(global::iE) + "\n");
   global::OLED->print("- Led state: " + String(global::iE) + "\n");
 
-
-  //delay(1000);
-
-  if (digitalRead(PA2)){
+  if (digitalRead(PA2)) {
     global::stateSignal = !global::stateSignal;
     delay(200);
-  } // lectura del boton de envio para enviar la señal
-  if (global::stateSignal){
+  }
+  if (global::stateSignal) {
     globalSender::ir_send.command = global::analogValue;
     irsnd_send_data(&globalSender::ir_send, true);
   }
-  /*else{
-    globalSender::ir_send.command = global::iE;
-    irsnd_send_data(&globalSender::ir_send, true);
-  }*/
-  if(digitalRead(PA3)){
+
+  if (digitalRead(PA3)) {
     global::stateLed = !global::stateLed;
     delay(200);
     // lectura del boton de apagado
