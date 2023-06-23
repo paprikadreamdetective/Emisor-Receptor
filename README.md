@@ -19,3 +19,5 @@ En algunos casos, puede ser necesario mover el jumper para poder cargar el progr
 
 
 ### Diagrama receptor
+
+https://drive.google.com/file/d/12ahWLE1FCWfCV3uolJXo3lmdWqBBVJCp/view
