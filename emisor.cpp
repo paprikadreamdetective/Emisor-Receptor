@@ -23,33 +23,32 @@ namespace globalReceiver{
 
 namespace global {
   Adafruit_SSD1306* OLED;
-  int iE, iR;
-  float vE, vR;
-  bool stateLed = false;
-  bool stateSignal = false;
+  int iR;
+  float vR;
 }
-
+/**
+ * @brief Configuración inicial de la bluepill.
+ * - En esta parte se configura el pin PA6 como una salida analogica.
+ * - Se inicializa la recepcion de la señal infrarroja usando irmp_init();
+ * - Se define la instancia de la pantalla oled, se establece tamaño y color del texto.
+ */
 void setup(){
 
-    Serial.begin(115200);
-    pinMode(ANALOG_OUTPUT, OUTPUT);
-    irmp_init();
-    irmp_print_active_protocols(&Serial);
-
-
-Wire.begin(SDA,SCL);
-global::OLED=new Adafruit_SSD1306(OLED_WIDTH, OLED_HEIGHT);
-global::OLED->begin(SSD1306_SWITCHCAPVCC, 60);
-global::OLED->setTextColor(SSD1306_WHITE);
-if(!global::OLED->begin(SSD1306_SWITCHCAPVCC,60)){
-utilities::blinkBreakpoint(100);
-global::OLED->setTextColor(SSD1306_WHITE);
- }
+  Serial.begin(115200);
+  pinMode(ANALOG_OUTPUT, OUTPUT);
+  irmp_init();
+  irmp_print_active_protocols(&Serial);
+  Wire.begin(SDA,SCL);
+  global::OLED=new Adafruit_SSD1306(OLED_WIDTH, OLED_HEIGHT);
+  global::OLED->begin(SSD1306_SWITCHCAPVCC, 60);
+  global::OLED->setTextColor(SSD1306_WHITE);
+  if(!global::OLED->begin(SSD1306_SWITCHCAPVCC,60))
+    utilities::blinkBreakpoint(100);
+  global::OLED->setTextColor(SSD1306_WHITE);
 }
 
 void loop(){
 static uint8_t command = 0;
-
 char buffer[10];
 
 global::OLED-> clearDisplay();
@@ -68,7 +67,7 @@ if(irmp_get_data(&globalReceiver::ir_receiver)){
   int address = globalReceiver::ir_receiver.address;
 
   if (address == OFF_LED){
-    analogWrite(ANALOG_OUTPUT, 1);
+    analogWrite(ANALOG_OUTPUT, 0);
     delay(200);
   }
   if (address == ON_LED){
