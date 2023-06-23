@@ -81,13 +81,14 @@ void loop() {
   global::OLED->clearDisplay();
   global::OLED->setCursor(0, 0);
   global::OLED-> setTextSize(2);
-  global::OLED->println("Sender");
+  global::OLED->println("Sender\n");
   global::analogValue = analogRead(PA1);
   global::iE = global::analogValue;
   global::vE = global::analogValue * 1.0;
   global::vE = (global::vE *3.3)/1023.0;
   global::OLED->setTextSize(1);
   dtostrf(global::vE, 5, 2, global::buffer);
+  global::OLED->print("-");
   global::OLED->print(global::buffer);
   global::OLED->print(" V\n");
   global::OLED->print("- send:" + String(global::iE) + "\n");
@@ -104,14 +105,12 @@ void loop() {
     delay(200);
     if (global::stateLed) {
       global::OLED->print("- Led state: On \n");
-      delay(1000);
       globalSender::ir_send.command = global::iE;
       globalSender::ir_send.address = 0xabc;
       irsnd_send_data(&globalSender::ir_send, true);
     }else{
-      //global::iE = 0;
+      global::iE = 0;
       global::OLED->print("- Led state: Off \n");
-      delay(1000);
       globalSender::ir_send.command = global::iE;
       globalSender::ir_send.address = 0xdef;
       irsnd_send_data(&globalSender::ir_send, true);
