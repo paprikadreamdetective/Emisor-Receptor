@@ -22,11 +22,15 @@
 #define OFF_LED 0xdef
 
 /**
- * @brief
- *
+ * @brief Espacio de nombres correspondiente al estado de los botones, lestura analogica del potenciometro e intensidad de emision.
+ * @var: OLED: Apuntador de pantalla OLED.
+ * @var: analogValue: Lectura de potenciometro.
+ * @var: iE: Intensidad de emision.
+ * @var: stateLed: Control del estado del boton que enciende y apaga el led.
+ * @var: stateSignal: Control del envio de la señal infrarroja.
  */
 namespace global {
-  Adafruit_SSD1306* OLED;
+  Adafruit_SSD1306 *OLED;
   unsigned int analogValue;
   int iE, iR;
   float vE, vR;
