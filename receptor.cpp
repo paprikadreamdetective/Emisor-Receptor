@@ -5,7 +5,6 @@
  *  @brief Receptor de señales infrarrojas para controlar la intensidad de un led mediante el uso de un potenciometro.
  *
  */
-
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -22,15 +21,26 @@
 
 #define ON_LED 0xabc
 #define OFF_LED 0xdef
-
 #define ANALOG_OUTPUT PA6
 
+/**
+ * @brief Espacio de nombres "globalReceiver".
+ * - Este espacio contiene la instancia requerida para recibir la señal infrarroja.
+ * @var: ir_receiver: Instancia del objeto a manipular para recibir la señal.
+ */
 namespace globalReceiver {
   IRMP_DATA ir_receiver;
 }
-
+/**
+ * @brief Espacio de nombres "global".
+ * - Contiene el apuntador de tipo Adafruit_SSD1306 para la pantalla oled y otras variables para calular la intensidad del led.
+ * @var: iR: intensidad recibida.
+ * @var: vR: Voltaje recibido
+ * @var: command: almacena los valores de la señal recibida.
+ * @var: buffer: arreglo de tamaño 10 que contendra la el msj a emitir en la pantalla oled.
+ */
 namespace global {
-  Adafruit_SSD1306* OLED;
+  Adafruit_SSD1306 *OLED;
   int iR;
   float vR;
   static uint8_t command = 0;
@@ -53,7 +63,10 @@ void setup() {
     utilities::blinkBreakpoint(100);
   global::OLED->setTextColor(SSD1306_WHITE);
 }
-
+/**
+ * @brief Funcin pirncipal.
+ * - Recibe una señal infrarroja que procesa para poder encender un led con un potenciometro
+ */
 void loop() {
   global::OLED-> clearDisplay();
   global::OLED->setCursor(0,0);
