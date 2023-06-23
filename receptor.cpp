@@ -79,7 +79,8 @@ if(irmp_get_data(&irmp_data)){
     global::iR = command;
     global::vR = command * 1.0;
     global::vR = (global::vR * 3.3)/1023.0;
-    dtostrf(global::vR, 5,2,buffer);
+    //dtostrf(global::vR, 3,1,buffer);
+    dtostrf(command, 5,2,buffer);
     //analogWrite (ANALOG_OUTPUT, (command * 1023)/100);
     //analogWrite (ANALOG_OUTPUT, (command * 255)/100);
     analogWrite(ANALOG_OUTPUT, (command*150)/90); // 4 encendidos
