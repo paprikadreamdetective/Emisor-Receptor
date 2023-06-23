@@ -38,12 +38,11 @@ namespace global {
   bool stateSignal = false;
 }
 /**
- * @brief
- *
+ * @brief Espacio de nombres correspondientes a la instancia de los objetos para emitir señales infrarrojas.
+ * @var: ir_send: Instancia del objeto que emitira la señal por infrarrojo.
  */
 namespace globalSender {
   IRMP_DATA ir_send;
-  IRMP_DATA irmp_dummy_data;
 }
 /**
  * @brief
