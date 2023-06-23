@@ -28,6 +28,7 @@
  * @var: iE: Intensidad de emision.
  * @var: stateLed: Control del estado del boton que enciende y apaga el led.
  * @var: stateSignal: Control del envio de la señal infrarroja.
+ * @var: buffer: arreglo de tamaño 10 que contendra la el msj a emitir en la pantalla oled.
  */
 namespace global {
   Adafruit_SSD1306 *OLED;
@@ -89,9 +90,9 @@ void loop() {
   global::vE = global::analogValue * 1.0;
   global::vE = (global::vE *3.3)/1023.0;
 
-  dtostrf(global::vE, 5, 2, buffer);
+  dtostrf(global::vE, 5, 2, global::buffer);
   //global::vE = map(global::iE, 0, 1023, 0, 3.3);
-  global::OLED->print(buffer);
+  global::OLED->print(global::buffer);
   global::OLED->print("- send:" + String(global::iE) + "\n");
   global::OLED->print("- Led state: " + String(global::iE) + "\n");
 
@@ -126,7 +127,6 @@ void loop() {
   global::OLED->display();
   delay(2);
 }
-
 
 
 
