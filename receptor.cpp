@@ -17,7 +17,9 @@
 
 #define ANALOG_OUTPUT PA6
 
-IRMP_DATA irmp_data;
+namespace globalReceiver{
+  IRMP_DATA irmp_data;
+}
 
 namespace global {
   Adafruit_SSD1306* OLED;
