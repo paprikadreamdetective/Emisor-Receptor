@@ -33,6 +33,8 @@ namespace global {
   Adafruit_SSD1306* OLED;
   int iR;
   float vR;
+  static uint8_t command = 0;
+  char buffer[10];
 }
 /**
  * @brief Configuración inicial de la bluepill.
@@ -56,8 +58,8 @@ void setup(){
 }
 
 void loop(){
-static uint8_t command = 0;
-char buffer[10];
+/*static uint8_t command = 0;
+char buffer[10];*/
 
 global::OLED-> clearDisplay();
 global::OLED->setCursor(0,0);
@@ -68,9 +70,9 @@ global::OLED-> println("command");
 
 if(irmp_get_data(&globalReceiver::ir_receiver)){
   if(globalReceiver::ir_receiver.command > 9)
-    command = globalReceiver::ir_receiver.command;
+    global::command = globalReceiver::ir_receiver.command;
   else
-    command = 0;
+    global::command = 0;
 
   int address = globalReceiver::ir_receiver.address;
 
@@ -79,21 +81,22 @@ if(irmp_get_data(&globalReceiver::ir_receiver)){
     delay(200);
   }
   if (address == ON_LED){
-    global::iR = command;
-    global::vR = command * 1.0;
+    global::iR = global::command;
+    global::vR = global::command * 1.0;
     global::vR = (global::vR * 3.3)/1023.0;
     //dtostrf(global::vR, 3,1,buffer);
-    dtostrf(command, 5,2,buffer);
+    dtostrf(global::command, 5, 2, global::buffer);
     //analogWrite (ANALOG_OUTPUT, (command * 1023)/100);
     //analogWrite (ANALOG_OUTPUT, (command * 255)/100);
-    analogWrite(ANALOG_OUTPUT, (command*150)/90); // 4 encendidos
+    analogWrite(ANALOG_OUTPUT, (global::command *150) / 90); // 4 encendidos
 
   }
 }
 
-global::OLED->printf("%s", buffer);
+global::OLED->printf("%s", global::buffer);
 global::OLED->display();
 
 //delay(500);
 }
+
 
