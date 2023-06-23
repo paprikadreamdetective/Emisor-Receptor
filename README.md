@@ -15,7 +15,7 @@ En algunos casos, puede ser necesario mover el jumper para poder cargar el progr
 
 ### Diagrama emisor
 
-
+![Imagen](https://i.imgur.com/EcnRIDD.png)
 
 
 ### Diagrama receptor
