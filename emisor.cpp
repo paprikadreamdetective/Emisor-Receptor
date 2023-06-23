@@ -89,9 +89,9 @@ void loop() {
   global::OLED->setCursor(0, 0);
   global::OLED->setTextSize(1.5);
   //global::OLED->print("----------\n");       // Lectura analogica del potenciometro.
-  analogValue = analogRead(PA1);
-  global::iE = analogValue;
-  global::vE = analogValue * 1.0;
+  global::analogValue = analogRead(PA1);
+  global::iE = global::analogValue;
+  global::vE = global::analogValue * 1.0;
   global::vE = (global::vE *3.3)/1023.0;
 
   char buffer[10];
@@ -109,7 +109,7 @@ void loop() {
     delay(200);
   } // lectura del boton de envio para enviar la señal
   if (global::stateSignal){
-    globalSender::ir_send.command = analogValue;
+    globalSender::ir_send.command = global::analogValue;
     irsnd_send_data(&globalSender::ir_send, true);
   }
   /*else{
