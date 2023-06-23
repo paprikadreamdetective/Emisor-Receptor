@@ -18,7 +18,7 @@
 #define ANALOG_OUTPUT PA6
 
 namespace globalReceiver{
-  IRMP_DATA irmp_data;
+  IRMP_DATA ir_receiver;
 }
 
 namespace global {
@@ -65,13 +65,13 @@ global::OLED->println("IR Rx");
 global::OLED->setTextSize(1);
 global::OLED-> println("command");
 
-if(irmp_get_data(&irmp_data)){
-  if(irmp_data.command > 9)
-    command = irmp_data.command;
+if(irmp_get_data(&globalReceiver::irmp_data)){
+  if(globalReceiver::irmp_data.command > 9)
+    command = globalReceiver::irmp_data.command;
   else
     command = 0;
 
-  int address = irmp_data.address;
+  int address = globalReceiver::irmp_data.address;
 
   if (address == OFF_LED){
     analogWrite(ANALOG_OUTPUT, 1);
