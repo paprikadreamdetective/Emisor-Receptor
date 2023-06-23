@@ -45,8 +45,12 @@ namespace globalSender {
   IRMP_DATA ir_send;
 }
 /**
- * @brief
- *
+ * @brief Configuracion de pines y emison de señales.
+ * - Se habilitan los pines a usar que en este caso son los siguientes:
+ *    + PA0:  Salida del mensaje a emitir.
+ *    + PA1: Entrada analogica del potenciometro.
+ *    + PA2: Boton que enciende y apaga el led.
+ *    + PA3: Boton que habilita el envio de señales infrarrojas.
  */
 void setup() {
   pinMode(PA0, OUTPUT);
