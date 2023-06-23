@@ -51,6 +51,9 @@ namespace globalSender {
  *    + PA1: Entrada analogica del potenciometro.
  *    + PA2: Boton que enciende y apaga el led.
  *    + PA3: Boton que habilita el envio de señales infrarrojas.
+ * - Tambien se incluye la configuracion de la pantalla oled, asi como la creacion del objeto y color el texto.
+ * - Se incluye la configuracion del protocolo de envio de mensajes NEC, asi como la asignacion de uan direccion y un comando a enviar.
+ * - Una condicion para verificar la ecistencia del protocolo a usar.
  */
 void setup() {
   pinMode(PA0, OUTPUT);
@@ -61,29 +64,19 @@ void setup() {
   global::OLED = new Adafruit_SSD1306(OLED_WIDTH, OLED_HEIGHT);
   global::OLED->begin(SSD1306_SWITCHCAPVCC, 60);
   global::OLED->setTextColor(SSD1306_WHITE);
-
-  // Inicializa la biblioteca IRMP
   irsnd_init();
-  //irmp_init();
-  //irmp_print_active_protocols(&Serial);
   irmp_irsnd_LEDFeedback(true);
-    /*
-     * Send NEC
-     */
-    globalSender::ir_send.protocol = IRMP_NEC_PROTOCOL;
-    globalSender::ir_send.address = 0x0707;
-    globalSender::ir_send.command = 0xFB; // The required inverse of the 8 bit command is added by the send routine.
-    globalSender::ir_send.flags = 2; // repeat frame 2 times
-
-  if (!irsnd_send_data(&globalSender::ir_send, true)) {
-        Serial.println(F("Protocol not found")); // name of protocol is printed by irsnd_data_print()
-    }
-    irsnd_data_print(&Serial, &globalSender::ir_send);
-
-
+  globalSender::ir_send.protocol = IRMP_NEC_PROTOCOL;
+  globalSender::ir_send.address = 0x0707;
+  globalSender::ir_send.command = 0xFB;
+  globalSender::ir_send.flags = 2;
+  if (!irsnd_send_data(&globalSender::ir_send, true))
+    Serial.println(F("Protocol not found"));
+  irsnd_data_print(&Serial, &globalSender::ir_send);
 }
 /**
- * @brief
+ * @brief Funcion principal del programa.
+ * -
  *
  */
 void loop() {
@@ -141,7 +134,6 @@ void loop() {
   global::OLED->display();
   delay(2);
 }
-
 
 
 
