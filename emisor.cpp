@@ -76,11 +76,9 @@ void setup() {
 }
 /**
  * @brief Funcion principal del programa.
- * -
- *
+ * - Mensajes en pantalla oled, lectura analogica del potenciometro, condiciones necesarias para la lectura de los botones.
  */
 void loop() {
-
   global::OLED->clearDisplay();
   global::OLED->setCursor(0, 0);
   global::OLED->setTextSize(1.5);
