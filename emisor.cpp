@@ -33,8 +33,8 @@
 namespace global {
   Adafruit_SSD1306 *OLED;
   unsigned int analogValue;
-  int iE, iR;
-  float vE, vR;
+  int iE;
+  float vE;
   bool stateLed = false;
   bool stateSignal = false;
   char buffer[10];
