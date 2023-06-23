@@ -1,69 +1,94 @@
 #include <Arduino.h>
-#include <IRremote.h>   // Libreria que proporciona los metodos necesarios para recibir una señal
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include "SSD1306_Defs.h"
-#include <IRremote.h>
+#include <SSD1306_Defs.h>
+#include <utilities.h>
+#include <irsndSelectMain15Protocols.h>
 
-#define RECV_PIN A6 // Pin que recibira la señal del emisor infrarrojo (conectado a el receptor)
-#define LED A0      // Pin del led a encender
+#define IRMP_PROTOCOL_NAMES 1
+#define IRMP_SUPPORT_NEC_PROTOCOL 1
+#define FEEDBACK_LED_IS_ACTIVE_LOW
+#define IRMP_INPUT_PIN PA0
+#include <irmp.hpp>
 
-// Contiene los atributos de la pantalla OLED
+#define ON_LED 0xabc
+#define OFF_LED 0xdef
+
+#define ANALOG_OUTPUT PA6
+
+IRMP_DATA irmp_data;
+
 namespace global {
   Adafruit_SSD1306* OLED;
   int iE, iR;
   float vE, vR;
-  bool stateLed = true;
+  bool stateLed = false;
   bool stateSignal = false;
 }
-// Campos correspondientes a al objeto que recibira la señal
-namespace globalReceiver{
-  IRrecv irrecv(RECV_PIN);
-  decode_results results;
-}
+
+/*namespace global{
+    unsigned int analogReading;
+    Adafruit_SSD1306 *oled;
+
+}*/
 
 void setup(){
-  pinMode(LED, OUTPUT);
-  globalReceiver::irrecv.enableIRIn();
-  Wire.begin(SDA, SCL);
-  global::OLED = new Adafruit_SSD1306(OLED_WIDTH, OLED_HEIGHT);
-  global::OLED->begin(SSD1306_SWITCHCAPVCC, 60);
-  global::OLED->setTextColor(SSD1306_WHITE);
+
+    Serial.begin(115200);
+    pinMode(ANALOG_OUTPUT, OUTPUT);
+    irmp_init();
+    irmp_print_active_protocols(&Serial);
+
+
+Wire.begin(SDA,SCL);
+global::OLED=new Adafruit_SSD1306(OLED_WIDTH, OLED_HEIGHT);
+global::OLED->begin(SSD1306_SWITCHCAPVCC, 60);
+global::OLED->setTextColor(SSD1306_WHITE);
+if(!global::OLED->begin(SSD1306_SWITCHCAPVCC,60)){
+utilities::blinkBreakpoint(100);
+global::OLED->setTextColor(SSD1306_WHITE);
+ }
 }
 
 void loop(){
-  static uint8_t command = 0;
-  static float V = 0.0;
-  char buffer[10];
+static uint8_t command = 0;
 
-  global::OLED->clearDisplay();
-  global::OLED->setCursor(0, 0);
-  global::OLED->setTextSize(1);
-  global::OLED->display();
-  delay(1000);
+char buffer[10];
 
-  if (globalReceiver::irrecv.decode()){
-    if (globalReceiver::irrecv.decodedIRData.command > 9)
-      command = globalReceiver::irrecv.decodedIRData.command;
-    else
-      command = 0;
-    V = (command * 3.3) / 100;
-    dtostrf(V, 3, 1, buffer);
-    analogWrite(LED, (command * 255) / 100);
-    //analogWrite(LED, global::iR);
-    global::iR = globalReceiver::irrecv.decodedIRData.command, HEX;
-    global::vR = map(global::iR, 0, 1023, 0, 3.3);
-    globalReceiver::irrecv.resume();
+global::OLED-> clearDisplay();
+global::OLED->setCursor(0,0);
+global::OLED-> setTextSize(2);
+global::OLED->println("IR Rx");
+global::OLED->setTextSize(1);
+global::OLED-> println("command");
+
+if(irmp_get_data(&irmp_data)){
+  if(irmp_data.command > 9)
+    command = irmp_data.command;
+  else
+    command = 0;
+
+  int address = irmp_data.address;
+
+  if (address == OFF_LED){
+    analogWrite(ANALOG_OUTPUT, 0);
+    delay(200);
   }
-  //global::OLED->printf("%s", buffer);
-  //global::OLED->display();
+  if (address == ON_LED){
+    global::iR = command;
+    global::vR = command * 1.0;
+    global::vR = (global::vR * 3.3)/1023.0;
+    dtostrf(global::vR, 5,2,buffer);
+    //analogWrite (ANALOG_OUTPUT, (command * 1023)/100);
+    //analogWrite (ANALOG_OUTPUT, (command * 255)/100);
+    analogWrite(ANALOG_OUTPUT, (command*150)/90); // 4 encendidos
 
-    global::OLED->println("Comando recibido \n");
-    global::OLED->println(global::iR, HEX);
-    global::OLED->display();
-    delay(1000);
+  }
+}
 
+global::OLED->print(buffer);
+global::OLED->display();
 
-  delay(1000);
+//delay(500);
 }
