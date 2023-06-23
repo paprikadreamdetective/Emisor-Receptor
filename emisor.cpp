@@ -18,9 +18,6 @@
 #include <irsndSelectMain15Protocols.h>
 #include <irsnd.hpp>
 
-#define ON_LED 0xabc
-#define OFF_LED 0xdef
-
 /**
  * @brief Espacio de nombres correspondiente al estado de los botones, lestura analogica del potenciometro e intensidad de emision.
  * @var: OLED: Apuntador de pantalla OLED.
@@ -84,18 +81,14 @@ void loop() {
   global::OLED->clearDisplay();
   global::OLED->setCursor(0, 0);
   global::OLED->setTextSize(1.5);
-  //global::OLED->print("----------\n");       // Lectura analogica del potenciometro.
   global::analogValue = analogRead(PA1);
   global::iE = global::analogValue;
   global::vE = global::analogValue * 1.0;
   global::vE = (global::vE *3.3)/1023.0;
-
   dtostrf(global::vE, 5, 2, global::buffer);
-  //global::vE = map(global::iE, 0, 1023, 0, 3.3);
   global::OLED->print(global::buffer);
+  global::OLED->print("\n");
   global::OLED->print("- send:" + String(global::iE) + "\n");
-  global::OLED->print("- Led state: " + String(global::iE) + "\n");
-
   if (digitalRead(PA2)) {
     global::stateSignal = !global::stateSignal;
     delay(200);
@@ -104,21 +97,17 @@ void loop() {
     globalSender::ir_send.command = global::analogValue;
     irsnd_send_data(&globalSender::ir_send, true);
   }
-
   if (digitalRead(PA3)) {
     global::stateLed = !global::stateLed;
     delay(200);
-    // lectura del boton de apagado
-    if(global::stateLed){
-      //global::iE = 1023;
-      //globalSender::ir_send.sendRC5(global::iE, 14);
-      global::OLED->print("- Led state: On" + String(global::iE) + "\n");
+    if (global::stateLed) {
+      global::OLED->print("- Led state: On \n");
       globalSender::ir_send.command = global::iE;
       globalSender::ir_send.address = 0xabc;
       irsnd_send_data(&globalSender::ir_send, true);
     }else{
       global::iE = 0;
-      global::OLED->print("- Led state: Off" + String(global::iE) + "\n");
+      global::OLED->print("- Led state: Off \n");
       globalSender::ir_send.command = global::iE;
       globalSender::ir_send.address = 0xdef;
       irsnd_send_data(&globalSender::ir_send, true);
