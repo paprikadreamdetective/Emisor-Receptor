@@ -62,12 +62,7 @@ void loop() {
   global::OLED->setTextSize(1);
   global::OLED-> println("command");
   if (irmp_get_data(&globalReceiver::ir_receiver)) {
-
     global::command = (globalReceiver::ir_receiver.command > 9) ? globalReceiver::ir_receiver.command : 0;
-    /*if (globalReceiver::ir_receiver.command > 9)
-      global::command = globalReceiver::ir_receiver.command;
-    else
-      global::command = 0;*/
     int address = globalReceiver::ir_receiver.address;
     if (address == OFF_LED) {
       analogWrite(ANALOG_OUTPUT, 0);
